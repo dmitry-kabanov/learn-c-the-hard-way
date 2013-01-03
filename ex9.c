@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     name[0] = 'Z';
     name[1] = 'e';
     name[2] = 'd';
-    name[3] = 'w';
+    name[3] = '\0';
 
     printf("Numbers: %d %d %d %d\n",
            numbers[0],
