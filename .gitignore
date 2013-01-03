@@ -1,0 +1,6 @@
+*
+*.dSYM
+!*.c
+!Makefile
+!.gitignore
+
