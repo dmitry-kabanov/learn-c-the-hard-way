@@ -6,8 +6,9 @@ int main(int argc, char *argv[])
 
     // Go through each string in argv
     // Why am I skipping argv[0]?
-    for (i = 1; i < argc; i++) {
+    while (i < argc) {
         printf("arg %d: %s\n", i, argv[i]);
+        i++;
     }
 
     char *states[] = {
@@ -16,11 +17,12 @@ int main(int argc, char *argv[])
         "Washington",
         "Texas"
     };
-
     int num_states = 4;
 
-    for (i = 0; i < num_states; i++) {
+    i = 0;
+    while (i < num_states) {
         printf("state %d: %s\n", i, states[i]);
+        i++;
     }
 
     return 0;
