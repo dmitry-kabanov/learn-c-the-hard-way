@@ -10,13 +10,12 @@ int main(int argc, char *argv[])
         printf("arg %d: %s\n", i, argv[i]);
     }
 
-    char *states[] = {
-        "California",
-        "Oregon",
-        "Washington",
-        "Texas"
-    };
+    char *states[] = {'\0', '\0', '\0', '\0'};
     int num_states = 4;
+
+    for (i = 0; i < num_states && i < argc; i++) {
+        states[i] = argv[i+1];
+    }
 
     for (i = num_states - 1; i >= 0; i--) {
         printf("state %d: %s\n", i, states[i]);
