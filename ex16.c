@@ -26,6 +26,7 @@ struct Person *Person_create(const char *name, int age, int height, int weight)
 void Person_destroy(struct Person *who)
 {
     assert(who != NULL);
+    free(who->name);
     free(who);
 }
 
