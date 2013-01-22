@@ -119,13 +119,12 @@ void Database_create(struct Connection *conn, int max_rows, int max_data)
 
     printf("%d\n", max_rows);
     for (i = 0; i < max_rows; i++) {
-        // then just assign it
         conn->db->rows[i].id = i;
         conn->db->rows[i].set = 0;
         conn->db->rows[i].name = malloc(sizeof(char) * conn->db->max_data);
-        strcpy(conn->db->rows[i].name, '\0');
+        strcpy(conn->db->rows[i].name, "\0");
         conn->db->rows[i].email = malloc(sizeof(char) * conn->db->max_data);
-        strcpy(conn->db->rows[i].email, '\0');
+        strcpy(conn->db->rows[i].email, "\0");
     }
 }
 
