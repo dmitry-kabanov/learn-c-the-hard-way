@@ -254,7 +254,7 @@ void Database_find(struct Connection *conn, char *needle)
     }
 
     for (i = 0; i < db->max_rows; i++) {
-        if (strcasestr(db->rows[i].name, needle) || strcasestr(db->rows[i].email, needle)) {
+        if (strstr(db->rows[i].name, needle) || strstr(db->rows[i].email, needle)) {
             count++;
             found[i] = 1;
         }
