@@ -4,6 +4,7 @@
 #include <stdlib.h>
 
 #define MAX_DATA 512
+// max number of rows in a database
 #define MAX_ROWS 100
 
 struct Address {
