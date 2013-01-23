@@ -335,7 +335,8 @@ int main(int argc, char *argv[])
             if (argc != 4) {
                 die("Need an id to get.", conn);
             }
-            checkIntegerInRange(atoi(argv[3]), 1, conn->db->max_rows, conn);
+            id = atoi(argv[3]);
+            checkIntegerInRange(id, 1, conn->db->max_rows, conn);
 
             Database_get(conn, id);
             break;
