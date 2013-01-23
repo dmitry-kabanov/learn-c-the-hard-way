@@ -279,6 +279,18 @@ void Database_close(struct Connection *conn)
             fclose(conn->file);
         }
         if (conn->db) {
+            if (conn->db->rows) {
+                int i;
+                for (i = 0; i < conn->db->max_rows; i++) {
+                    if (conn->db->rows[i].name) {
+                        free(conn->db->rows[i].name);
+                    }
+                    if (conn->db->rows[i].email) {
+                        free(conn->db->rows[i].email);
+                    }
+                }
+                free(conn->db->rows);
+            }
             free(conn->db);
         }
         free(conn);
