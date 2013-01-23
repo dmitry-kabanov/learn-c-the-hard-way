@@ -1,4 +1,4 @@
-CFLAGS=-Wall -O0 -g -Wwrite-strings
+CFLAGS=-Wall -O0 -g -Wwrite-strings --std=c99
 
 all: ex1 ex3
 
