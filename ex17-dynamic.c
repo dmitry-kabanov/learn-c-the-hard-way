@@ -355,7 +355,8 @@ int main(int argc, char *argv[])
             if (argc != 4) {
                 die("Need id to delete.", conn);
             }
-            checkIntegerInRange(atoi(argv[3]), 1, conn->db->max_rows, conn);
+            id = atoi(argv[3]);
+            checkIntegerInRange(id, 1, conn->db->max_rows, conn);
 
             Database_delete(conn, id);
             Database_write(conn);
