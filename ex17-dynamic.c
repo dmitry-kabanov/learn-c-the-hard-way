@@ -344,7 +344,8 @@ int main(int argc, char *argv[])
             if (argc != 6) {
                 die("Need id, name, email to set.", conn);
             }
-            checkIntegerInRange(atoi(argv[3]), 1, conn->db->max_rows, conn);
+            id = atoi(argv[3]);
+            checkIntegerInRange(id, 1, conn->db->max_rows, conn);
 
             Database_set(conn, id, argv[4], argv[5]);
             Database_write(conn);
