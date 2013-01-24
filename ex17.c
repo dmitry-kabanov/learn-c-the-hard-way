@@ -23,37 +23,14 @@ struct Connection {
     struct Database *db;
 };
 
+void die(const char *message, struct Connection *conn);
+
 void Address_print(struct Address *address)
 {
     printf("%d %s %s\n",
            address->id,
            address->name,
            address->email);
-}
-
-void Database_close(struct Connection *conn)
-{
-    if (conn) {
-        if (conn->file) {
-            fclose(conn->file);
-        }
-        if (conn->db) {
-            free(conn->db);
-        }
-        free(conn);
-    }
-}
-
-void die(const char *message, struct Connection *conn)
-{
-    if (errno) {
-        perror(message);
-    } else {
-        printf("ERROR: %s\n", message);
-    }
-
-    Database_close(conn);
-    exit(1);
 }
 
 void Database_load(struct Connection *conn)
@@ -176,6 +153,31 @@ void Database_list(struct Connection *conn)
             Address_print(cur);
         }
     }
+}
+
+void Database_close(struct Connection *conn)
+{
+    if (conn) {
+        if (conn->file) {
+            fclose(conn->file);
+        }
+        if (conn->db) {
+            free(conn->db);
+        }
+        free(conn);
+    }
+}
+
+void die(const char *message, struct Connection *conn)
+{
+    if (errno) {
+        perror(message);
+    } else {
+        printf("ERROR: %s\n", message);
+    }
+
+    Database_close(conn);
+    exit(1);
 }
 
 int main(int argc, char *argv[])
