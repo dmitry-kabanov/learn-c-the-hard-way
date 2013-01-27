@@ -117,7 +117,6 @@ void Database_create(struct Connection *conn, int max_rows, int max_data)
     conn->db->max_data = max_data;
     conn->db->rows = malloc(sizeof(struct Address) * max_rows);
 
-    printf("%d\n", max_rows);
     for (i = 0; i < max_rows; i++) {
         conn->db->rows[i].id = i;
         conn->db->rows[i].set = 0;
