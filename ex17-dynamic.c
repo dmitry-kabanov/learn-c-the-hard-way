@@ -35,6 +35,8 @@ void Address_print(struct Address *address)
 
 void Database_load(struct Connection *conn)
 {
+    char msg[100];
+    size_t field_size;
     int rc = fread(&conn->db->max_data, sizeof(int), 1, conn->file);
     if (rc != 1) {
         die("Failed to load max_data.", conn);
@@ -49,19 +51,34 @@ void Database_load(struct Connection *conn)
     size_t db_size = sizeof(struct Address) * db->max_rows;
     db->rows = malloc(db_size);
 
+    field_size = sizeof(char) * db->max_data;
     int i;
     for (i = 0; i < db->max_rows; i++) {
-        struct Address *addr = malloc(sizeof(struct Address));
-        addr->name = malloc(sizeof(char) * db->max_data);
-        addr->email = malloc(sizeof(char) * db->max_data);
-        db->rows[i] = *addr;
-    }
+        rc = fread(&db->rows[i].id, sizeof(int), 1, conn->file);
+        if (rc != 1) {
+            sprintf(msg, "Failed to load id for row %d.", i);
+            die(msg, conn);
+        }
 
-    printf("Database rows: %d\n", db->max_rows);
-    printf("Database max data: %d\n", db->max_data);
-    rc = fread(&conn->db->rows, db_size, 1, conn->file);
-    if (rc != 1) {
-        die("Failed to load database rows.", conn);
+        rc = fread(&db->rows[i].set, sizeof(int), 1, conn->file);
+        if (rc != 1) {
+            sprintf(msg, "Failed to load set flag for row %d.", i);
+            die(msg, conn);
+        }
+
+        db->rows[i].name = malloc(field_size);
+        rc = fread(db->rows[i].name, sizeof(char) * db->max_data, 1, conn->file);
+        if (rc != 1) {
+            sprintf(msg, "Failed to load name field for row %d.", i);
+            die(msg, conn);
+        }
+
+        db->rows[i].email = malloc(field_size);
+        rc = fread(db->rows[i].email, sizeof(char) * db->max_data, 1, conn->file);
+        if (rc != 1) {
+            sprintf(msg, "Failed to load email field for row %d.", i);
+            die(msg, conn);
+        }
     }
 }
 
@@ -96,11 +113,47 @@ struct Connection *Database_open(const char *filename, char mode)
 
 void Database_write(struct Connection *conn)
 {
+    int rc;
+    int i;
+    char msg[100];
+    struct Database *db = conn->db;
+
     rewind(conn->file);
 
-    int rc = fwrite(conn->db, sizeof(struct Database), 1, conn->file);
+    rc = fwrite(&db->max_data, sizeof(int), 1, conn->file);
     if (rc != 1) {
-        die("Failed to write database.", conn);
+        die("Failed to write max_data value.", conn);
+    }
+
+    rc = fwrite(&db->max_rows, sizeof(int), 1, conn->file);
+    if (rc != 1) {
+        die("Failed to write max_rows values.", conn);
+    }
+
+    for (i = 0; i < db->max_rows; i++) {
+        rc = fwrite(&db->rows[i].id, sizeof(int), 1, conn->file);
+        if (rc != 1) {
+            sprintf(msg, "Failed to write id field for row %d.", i);
+            die(msg, conn);
+        }
+
+        rc = fwrite(&db->rows[i].set, sizeof(int), 1, conn->file);
+        if (rc != 1) {
+            sprintf(msg, "Failed to write set field for row %d.", i);
+            die(msg, conn);
+        }
+
+        rc = fwrite(db->rows[i].name, sizeof(char) * db->max_data, 1, conn->file);
+        if (rc != 1) {
+            sprintf(msg, "Failed to write name field for row %d.", i);
+            die(msg, conn);
+        }
+
+        rc = fwrite(db->rows[i].email, sizeof(char) * db->max_data, 1, conn->file);
+        if (rc != 1) {
+            sprintf(msg, "Failed to write email field for row %d.", i);
+            die(msg, conn);
+        }
     }
 
     rc = fflush(conn->file);
@@ -117,13 +170,18 @@ void Database_create(struct Connection *conn, int max_rows, int max_data)
     conn->db->max_data = max_data;
     conn->db->rows = malloc(sizeof(struct Address) * max_rows);
 
+    char *empty_field_value = malloc(sizeof(char) * max_data);
+    for (i = 0; i < max_data; i++) {
+        empty_field_value[i] = '\0';
+    }
+
     for (i = 0; i < max_rows; i++) {
         conn->db->rows[i].id = i;
         conn->db->rows[i].set = 0;
         conn->db->rows[i].name = malloc(sizeof(char) * conn->db->max_data);
-        strcpy(conn->db->rows[i].name, "\0");
+        strcpy(conn->db->rows[i].name, empty_field_value);
         conn->db->rows[i].email = malloc(sizeof(char) * conn->db->max_data);
-        strcpy(conn->db->rows[i].email, "\0");
+        strcpy(conn->db->rows[i].email, empty_field_value);
     }
 }
 
