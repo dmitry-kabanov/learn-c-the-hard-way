@@ -122,7 +122,9 @@ void Database_create(struct Connection *conn, int max_rows, int max_data)
         // then just assign it
         conn->db->rows[i].id = i;
         conn->db->rows[i].set = 0;
+        conn->db->rows[i].name = malloc(sizeof(char) * conn->db->max_data);
         strcpy(conn->db->rows[i].name, '\0');
+        conn->db->rows[i].email = malloc(sizeof(char) * conn->db->max_data);
         strcpy(conn->db->rows[i].email, '\0');
     }
 }
