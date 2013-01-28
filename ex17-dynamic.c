@@ -223,8 +223,8 @@ void Database_get(struct Connection *conn, int id)
 
 void Database_delete(struct Connection *conn, int id)
 {
-    struct Address addr = {.id = id, .set = 0};
-    conn->db->rows[id] = addr;
+    conn->db->rows[id - 1].id = id;
+    conn->db->rows[id - 1].set = 0;
 }
 
 void Database_list(struct Connection *conn)
