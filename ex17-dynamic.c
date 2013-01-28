@@ -241,6 +241,33 @@ void Database_list(struct Connection *conn)
     }
 }
 
+void Database_find(struct Connection *conn, char *needle)
+{
+    struct Database *db = conn->db;
+
+    int i;
+    int count = 0;
+    char *found = malloc(sizeof(char) * db->max_rows);
+
+    for (i = 0; i < db->max_rows; i++) {
+        found[i] = 0;
+    }
+
+    for (i = 0; i < db->max_rows; i++) {
+        if (strcasestr(db->rows[i].name, needle) || strcasestr(db->rows[i].email, needle)) {
+            count++;
+            found[i] = 1;
+        }
+    }
+
+    printf("Found %d records:\n", count);
+    for (i = 0; i < db->max_rows; i++) {
+        if (found[i]) {
+            Address_print(&db->rows[i]);
+        }
+    }
+}
+
 void Database_close(struct Connection *conn)
 {
     if (conn) {
@@ -331,6 +358,14 @@ int main(int argc, char *argv[])
 
         case 'l':
             Database_list(conn);
+            break;
+            
+        case 'f':
+            if (argc != 4) {
+                die("Need a search string.", conn);
+            }
+
+            Database_find(conn, argv[3]);
             break;
 
         default:
