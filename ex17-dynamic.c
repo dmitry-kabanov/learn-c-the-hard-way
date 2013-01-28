@@ -254,6 +254,17 @@ void Database_close(struct Connection *conn)
     }
 }
 
+void checkIntegerInRange(int number, int minValue, int maxValue, struct Connection *conn)
+{
+    if (number < 1) {
+        die("ID must be positive.", conn);
+    }
+
+    if (number > conn->db->max_rows) {
+        die("There's not that many records.", conn);
+    }
+}
+
 void die(const char *message, struct Connection *conn)
 {
     if (errno) {
@@ -279,14 +290,6 @@ int main(int argc, char *argv[])
     int max_rows;
     int max_data;
 
-    if (argc > 3) {
-        id = atoi(argv[3]);
-
-        if (id > conn->db->max_rows) {
-            die("There's not that many records.", conn);
-        }
-    }
-
     switch(action) {
         case 'c':
             printf("Number of rows in database: ");
@@ -301,6 +304,7 @@ int main(int argc, char *argv[])
             if (argc != 4) {
                 die("Need an id to get.", conn);
             }
+            checkIntegerInRange(atoi(argv[3]), 1, conn->db->max_rows, conn);
 
             Database_get(conn, id);
             break;
@@ -309,6 +313,7 @@ int main(int argc, char *argv[])
             if (argc != 6) {
                 die("Need id, name, email to set.", conn);
             }
+            checkIntegerInRange(atoi(argv[3]), 1, conn->db->max_rows, conn);
 
             Database_set(conn, id, argv[4], argv[5]);
             Database_write(conn);
@@ -318,6 +323,7 @@ int main(int argc, char *argv[])
             if (argc != 4) {
                 die("Need id to delete.", conn);
             }
+            checkIntegerInRange(atoi(argv[3]), 1, conn->db->max_rows, conn);
 
             Database_delete(conn, id);
             Database_write(conn);
