@@ -176,7 +176,7 @@ void Database_create(struct Connection *conn, int max_rows, int max_data)
     }
 
     for (i = 0; i < max_rows; i++) {
-        conn->db->rows[i].id = i;
+        conn->db->rows[i].id = i + 1;
         conn->db->rows[i].set = 0;
         conn->db->rows[i].name = malloc(sizeof(char) * conn->db->max_data);
         strcpy(conn->db->rows[i].name, empty_field_value);
@@ -187,7 +187,7 @@ void Database_create(struct Connection *conn, int max_rows, int max_data)
 
 void Database_set(struct Connection *conn, int id, const char *name, const char *email)
 {
-    struct Address *addr = &conn->db->rows[id];
+    struct Address *addr = &conn->db->rows[id - 1];
     if (addr->set) {
         die("Already set, delete it first.", conn);
     }
@@ -212,7 +212,7 @@ void Database_set(struct Connection *conn, int id, const char *name, const char 
 
 void Database_get(struct Connection *conn, int id)
 {
-    struct Address *addr = &conn->db->rows[id];
+    struct Address *addr = &conn->db->rows[id - 1];
 
     if (addr->set) {
         Address_print(addr);
@@ -275,14 +275,14 @@ int main(int argc, char *argv[])
     char *dbfile = argv[1];
     char action = argv[2][0];
     struct Connection *conn = Database_open(dbfile, action);
-    int id = 0;
+    int id = 1;
     int max_rows;
     int max_data;
 
     if (argc > 3) {
         id = atoi(argv[3]);
 
-        if (id >= conn->db->max_rows) {
+        if (id > conn->db->max_rows) {
             die("There's not that many records.", conn);
         }
     }
