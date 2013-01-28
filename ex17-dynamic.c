@@ -260,10 +260,14 @@ void Database_find(struct Connection *conn, char *needle)
         }
     }
 
-    printf("Found %d records:\n", count);
-    for (i = 0; i < db->max_rows; i++) {
-        if (found[i]) {
-            Address_print(&db->rows[i]);
+    if (!count) {
+        printf("No records found for search string '%s'.\n", needle);
+    } else {
+        printf("Found %d records:\n", count);
+        for (i = 0; i < db->max_rows; i++) {
+            if (found[i]) {
+                Address_print(&db->rows[i]);
+            }
         }
     }
 }
