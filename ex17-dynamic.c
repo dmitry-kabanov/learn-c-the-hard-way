@@ -270,6 +270,7 @@ void Database_find(struct Connection *conn, char *needle)
             }
         }
     }
+    free(found);
 }
 
 void Database_close(struct Connection *conn)
